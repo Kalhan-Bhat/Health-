@@ -1,0 +1,13 @@
+# MedBridge — Build Task List
+
+Tracks progress through the phased build plan (spec §15). Updated at the end of each phase.
+
+| Phase | Description | Status |
+|---|---|---|
+| 0 | Scaffolding: repo structure, .gitignore, backend venv, FastAPI with 2 stub routes, Vite React shell (tabs, DisclaimerBanner, proxy), `test_routes.py` | ⏳ In progress |
+| 1 | PDF extraction: `make_sample_pdfs.py`, `pdf_extractor.py`, error envelope + handlers, `test_pdf_extract.py` | ⬜ Not started |
+| 2 | Report analysis with LLM: `llm_client.py`, prompts, `range_parser.py`, `report_analyzer.py`, red flags, tests | ⬜ Not started |
+| 3 | Frontend report experience: upload, summary, explanation cards, doctor questions, dashboard + range bars | ⬜ Not started |
+| 4 | Knowledge base (≥25 docs) + RAG: chunker, embedder, index, retriever, answerer, eval (hit@3 ≥ 0.8) | ⬜ Not started |
+| 5 | Ask tab UI + report-aware Q&A: chat, source cards, citations, suggestions, report toggle | ⬜ Not started |
+| 6 | Hardening & polish: rate limit, post-check, logging, print CSS, a11y, README, lint clean, DoD | ⬜ Not started |
