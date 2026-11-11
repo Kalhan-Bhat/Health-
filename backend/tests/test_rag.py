@@ -149,3 +149,14 @@ async def test_model_saying_not_found_is_ungrounded(fake_llm) -> None:
         AskRequest(question="hb?"), [_hit("haemoglobin", "Hb")], started=time.perf_counter()
     )
     assert res.grounded is False and res.sources == []
+
+
+async def test_fullwidth_markers_are_normalised(fake_llm) -> None:
+    fake_llm.text_responses = ["Your Hb is low【Report】 and carries oxygen【1】."]
+    req = AskRequest(
+        question="Why is my hb low?",
+        report_context=ReportContext(tests=[SlimTest(name="Hb", value=10.8, status="low")]),
+    )
+    res = await answerer.answer(req, [_hit("haemoglobin", "Hb")], started=time.perf_counter())
+    assert "[Report]" in res.answer and "[1]" in res.answer
+    assert res.used_report_context is True and [s.id for s in res.sources] == [1]

@@ -30,6 +30,8 @@ STATIC_FOLLOW_UPS = [
 _CITATION_RE = re.compile(r"\[(\d+)\]")
 _FOLLOW_UPS_RE = re.compile(r"^\s*\**FOLLOW[_ ]UPS\**\s*:\s*(.*)$", re.IGNORECASE | re.MULTILINE)
 _NOT_FOUND_PHRASE = "couldn't find this in medbridge"
+# Some models write markers with full-width brackets, e.g. 【1】 or 【Report】.
+_FULLWIDTH_MARKER_RE = re.compile(r"【\s*([^】]{1,20}?)\s*】")
 SNIPPET_CHARS = 220
 
 
@@ -58,7 +60,7 @@ async def answer(req: AskRequest, hits: list[ScoredChunk], *, started: float) ->
     )
     raw = await llm.chat_text(RAG_SYSTEM, [{"role": "user", "content": user_prompt}])
 
-    text, follow_ups = split_follow_ups(raw)
+    text, follow_ups = split_follow_ups(normalize_markers(raw))
     sources = select_sources(text, hits)
     grounded = bool(sources) and _NOT_FOUND_PHRASE not in text.lower()
     if not grounded:
@@ -133,6 +135,11 @@ def build_history_block(req: AskRequest) -> str:
 
 
 # ------------------------------------------------------------------ reply parsing
+
+
+def normalize_markers(raw: str) -> str:
+    """Turn 【1】 / 【Report】 into [1] / [Report] so citations are recognised."""
+    return _FULLWIDTH_MARKER_RE.sub(r"[\1]", raw)
 
 
 def split_follow_ups(raw: str) -> tuple[str, list[str]]:

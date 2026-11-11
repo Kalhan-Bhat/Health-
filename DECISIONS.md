@@ -52,3 +52,9 @@ The report and chat screens show live AI output, which needs a real Groq key. Th
 
 ## D17. Rate limiting is middleware
 The optional per-IP limit from §12 (20 requests per minute) is Starlette middleware, not a route, so the two-endpoint rule still holds. Set `RATE_LIMIT_PER_MINUTE=0` to turn it off.
+
+## D18. Default model changed to `openai/gpt-oss-120b`
+On 2026-11-12, Groq returned `404 model_not_found` for `llama-3.3-70b-versatile` (the spec's default; §0 warns that Groq retires models). From the models this key can use, `openai/gpt-oss-120b` was chosen: a large general chat model with JSON mode and a 131k context. The live CBC check passes in about 9 s. The model is still read only from `GROQ_MODEL`, so it can be changed in `.env` without touching code.
+
+## D19. Full-width citation brackets are normalised
+gpt-oss sometimes writes markers as `【1】` / `【Report】`. `answerer.normalize_markers` converts them to `[1]` / `[Report]` before citations are mapped, so source mapping, the "your report" badge and `used_report_context` work for any model.
