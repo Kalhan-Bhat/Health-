@@ -43,3 +43,12 @@ The response flag is set when report context was sent **and** the answer contain
 
 ## D14. The prebuilt index is not committed
 `backend/data/index/` stays git-ignored. Build it with `python -m scripts.build_index` (about 30 seconds after the model download). This way the index can never get out of date with the knowledge base.
+
+## D15. One live test stands in for the deferred live checks
+`backend/tests/test_live.py` (marked `live`, skipped by default) runs the Phase 2 acceptance check against the real Groq API: the CBC sample must return Haemoglobin `low`, at least 4 doctor questions and a disclaimer, in under 15 s. Once a key is in `.env`, run `pytest -m live`. In that mode `conftest.py` keeps the real key instead of the dummy test key.
+
+## D16. Screenshots left for the user
+The report and chat screens show live AI output, which needs a real Groq key. The README explains where to add screenshots after the key is set.
+
+## D17. Rate limiting is middleware
+The optional per-IP limit from §12 (20 requests per minute) is Starlette middleware, not a route, so the two-endpoint rule still holds. Set `RATE_LIMIT_PER_MINUTE=0` to turn it off.

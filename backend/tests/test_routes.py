@@ -43,3 +43,24 @@ def test_other_common_paths_do_not_exist() -> None:
         res = client.get(path)
         assert res.status_code == 404
         assert res.json()["error"]["code"] == "HTTP_404"
+
+
+def test_rate_limiter_returns_envelope() -> None:
+    """The middleware blocks the request after the limit, with the uniform error shape."""
+    from fastapi import FastAPI
+
+    from app.safety.rate_limit import RateLimitMiddleware
+
+    mini = FastAPI()
+    mini.add_middleware(RateLimitMiddleware, limit_per_minute=2)
+
+    @mini.post("/api/ping")
+    def ping() -> dict:
+        return {"ok": True}
+
+    c = TestClient(mini)
+    assert [c.post("/api/ping").status_code for _ in range(2)] == [200, 200]
+    blocked = c.post("/api/ping")
+    assert blocked.status_code == 429
+    assert blocked.json()["error"]["code"] == "RATE_LIMITED"
+    assert "Retry-After" in blocked.headers

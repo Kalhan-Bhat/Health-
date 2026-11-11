@@ -5,15 +5,23 @@ Groq key. The `fake_llm` fixture replaces the Groq client with canned answers, s
 normal test runs never call the real API (live tests are marked `@pytest.mark.live`).
 """
 
+import copy
 import os
 
-os.environ.setdefault("GROQ_API_KEY", "test-key-not-real")
-os.environ.setdefault("APP_ENV", "development")
-os.environ.setdefault("RATE_LIMIT_PER_MINUTE", "0")  # no rate limiting inside tests
+import pytest
 
-import copy  # noqa: E402
 
-import pytest  # noqa: E402
+def pytest_configure(config: pytest.Config) -> None:
+    """Runs before any app module is imported.
+
+    Normal runs get a dummy key, so they never need (or use) a real one.
+    `pytest -m live` keeps the real key from backend/.env instead.
+    """
+    os.environ.setdefault("APP_ENV", "development")
+    os.environ.setdefault("RATE_LIMIT_PER_MINUTE", "0")  # no rate limiting inside tests
+    if config.getoption("markexpr", "").strip() != "live":
+        os.environ.setdefault("GROQ_API_KEY", "test-key-not-real")
+
 
 from app.services import llm_client  # noqa: E402
 

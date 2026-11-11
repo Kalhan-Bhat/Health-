@@ -18,6 +18,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import get_settings
 from app.errors import register_exception_handlers
 from app.routes import analyze, ask
+from app.safety.rate_limit import RateLimitMiddleware
 from app.services.rag.embedder import get_embedder
 from app.services.rag.index_store import store as index_store
 
@@ -63,6 +64,10 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+# Optional per-IP rate limit (set RATE_LIMIT_PER_MINUTE=0 to switch it off).
+app.add_middleware(RateLimitMiddleware, limit_per_minute=settings.RATE_LIMIT_PER_MINUTE)
+
+# CORS is added last so it wraps everything, including rate-limit responses.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origin_list,
