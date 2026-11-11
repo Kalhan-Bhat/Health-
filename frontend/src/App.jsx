@@ -10,6 +10,7 @@ import RedFlagAlert from './components/RedFlagAlert.jsx'
 import TestExplanationCard from './components/TestExplanationCard.jsx'
 import DoctorQuestions from './components/DoctorQuestions.jsx'
 import HealthDashboard from './components/HealthDashboard.jsx'
+import KnowledgeAssistant from './components/KnowledgeAssistant.jsx'
 import { analyzeReport } from './api/client.js'
 import useAsync from './hooks/useAsync.js'
 import { ANALYZE_STAGES, SAMPLE_REPORTS } from './utils/constants.js'
@@ -18,11 +19,13 @@ import { isAbnormal, sortByConcern } from './utils/format.js'
 /**
  * Root component. Holds the global state:
  *  - report:    the AnalyzeReportResponse (kept in memory only — never in localStorage, for privacy)
+ *  - chatMessages: the Ask tab conversation (also in memory only)
  *  - activeTab: which tab is visible
  */
 export default function App() {
   const [activeTab, setActiveTab] = useState('report')
   const [report, setReport] = useState(null)
+  const [chatMessages, setChatMessages] = useState([])
   const analyze = useAsync(analyzeReport)
   // Remember the last upload so "Try again" can resend it without re-picking the file.
   const lastRequest = useRef(null)
@@ -97,7 +100,11 @@ export default function App() {
           aria-labelledby="tab-ask"
           hidden={activeTab !== 'ask'}
         >
-          <div className="card">Knowledge assistant is coming in a later phase.</div>
+          <KnowledgeAssistant
+            report={report}
+            messages={chatMessages}
+            setMessages={setChatMessages}
+          />
         </section>
       </main>
     </div>
