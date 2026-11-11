@@ -109,8 +109,10 @@ cp .env.example .env              # Windows: copy .env.example .env
 
 python -m scripts.make_sample_pdfs   # synthetic sample reports (already in the repo)
 python -m scripts.build_index        # first run downloads the embedding model (~90 MB)
-uvicorn app.main:app --reload --port 8000
+python -m uvicorn app.main:app --reload --port 8000
 ```
+
+> **Windows note:** if Windows reports "An Application Control policy has blocked this file" for `uvicorn.exe`, `pytest.exe` or similar, run them through Python as shown here (`python -m uvicorn ...`, `python -m pytest`). Smart App Control blocks the small launcher `.exe` files that pip creates, but not Python itself.
 
 The server refuses to start without a real `GROQ_API_KEY` and prints a clear message. With `APP_ENV=development`, the API docs are at <http://localhost:8000/docs> and show exactly the two endpoints.
 
@@ -165,9 +167,9 @@ Open <http://localhost:5173>, tick the consent box, and click one of the **sampl
 ```bash
 # Backend: 122 tests, all with a mocked LLM (no Groq key or network needed)
 cd backend
-pytest -q
-pytest -m live                 # live Groq check on the CBC sample (needs a real GROQ_API_KEY in .env)
-ruff check .                   # lint
+python -m pytest -q
+python -m pytest -m live           # live Groq check on the CBC sample (needs a real GROQ_API_KEY in .env)
+python -m ruff check .             # lint
 
 # Retrieval evaluation (after build_index)
 python -m scripts.eval_retrieval
