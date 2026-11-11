@@ -23,3 +23,5 @@ addopts = "-m 'not live'"
 [tool.ruff.lint.per-file-ignores]
 # schemas.py is kept exactly as written in spec §7.3 (uses Optional[...]).
 "app/schemas.py" = ["UP007", "UP045"]
+# Prompts are copied verbatim from spec §9, so long lines are kept as written.
+"app/prompts/*.py" = ["E501"]
