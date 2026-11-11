@@ -18,6 +18,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import get_settings
 from app.errors import register_exception_handlers
 from app.routes import analyze, ask
+from app.services.rag.embedder import get_embedder
+from app.services.rag.index_store import store as index_store
 
 settings = get_settings()
 
@@ -37,6 +39,15 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
         logger.error(msg)
         raise RuntimeError(msg)
     logger.info("MedBridge API starting (env=%s, model=%s)", settings.APP_ENV, settings.GROQ_MODEL)
+
+    # Load the knowledge-base index and warm up the embedding model once.
+    # If this fails, /api/ask returns 503 INDEX_NOT_READY but /api/analyze-report still works.
+    if index_store.load(settings.index_path, settings.EMBEDDING_MODEL):
+        try:
+            get_embedder(settings.EMBEDDING_MODEL).embed(["warm-up"])
+        except Exception:
+            logger.exception("Could not load the embedding model; /api/ask is disabled")
+            index_store.ready = False
     yield
 
 

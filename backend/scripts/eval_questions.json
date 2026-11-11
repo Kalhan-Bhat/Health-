@@ -1,0 +1,31 @@
+{
+  "questions": [
+    { "question": "what is hb", "expected_doc_slug": "haemoglobin" },
+    { "question": "bad cholesterol", "expected_doc_slug": "ldl-cholesterol" },
+    { "question": "sugar test 3 months average", "expected_doc_slug": "hba1c" },
+    { "question": "what does MCV mean", "expected_doc_slug": "mcv-mch-mchc" },
+    { "question": "what is the good cholesterol", "expected_doc_slug": "hdl-cholesterol" },
+    { "question": "what does a reference range mean", "expected_doc_slug": "reference-ranges-explained" },
+    { "question": "why do I need to fast before a blood test", "expected_doc_slug": "fasting-before-tests" },
+    { "question": "what is PCV in my blood report", "expected_doc_slug": "hematocrit" },
+    { "question": "low platelets meaning", "expected_doc_slug": "platelets" },
+    { "question": "what is TSH", "expected_doc_slug": "thyroid-panel" },
+    { "question": "kidney function eGFR", "expected_doc_slug": "creatinine-and-egfr" },
+    { "question": "what are triglycerides", "expected_doc_slug": "triglycerides" },
+    { "question": "high potassium level", "expected_doc_slug": "electrolytes" },
+    { "question": "SGPT SGOT liver enzymes", "expected_doc_slug": "liver-function-tests-overview" },
+    { "question": "what does ferritin show", "expected_doc_slug": "iron-studies-ferritin" },
+    { "question": "neutrophils and lymphocytes percentage", "expected_doc_slug": "wbc-differential" },
+    { "question": "what does a CBC test check", "expected_doc_slug": "complete-blood-count-overview" },
+    { "question": "what do H and L mean on my report", "expected_doc_slug": "common-report-abbreviations" },
+    { "question": "what is mg/dL", "expected_doc_slug": "units-of-measurement" },
+    { "question": "sunshine vitamin deficiency test", "expected_doc_slug": "vitamin-d" }
+  ],
+  "off_topic_questions": [
+    "who won the cricket match yesterday",
+    "how do I bake chocolate cake",
+    "what is the capital of France",
+    "best smartphone to buy this year",
+    "how to fix a flat bicycle tyre"
+  ]
+}

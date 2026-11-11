@@ -28,3 +28,18 @@ The spec allows `borderline` when the lab prints it or for labelled bands. For s
 
 ## D9. At least 4 doctor questions
 If the explanation call returns fewer than 4 doctor questions, generic, safe questions are added so the Phase 2 target (≥ 4 questions) always holds.
+
+## D10. FAISS with an exact numpy fallback
+On the build machine, Windows Application Control (Smart App Control) blocked FAISS's native DLL (`DLL load failed ... An Application Control policy has blocked this file`). PyTorch and the embedding model load fine. The index store therefore uses FAISS `IndexFlatIP` when its library loads, and otherwise does the same exact inner-product search with a numpy matrix product. Vectors are always saved to `vectors.npy` alongside `faiss.index`, so one index works with either backend. For a few hundred normalised vectors the results are identical. `faiss-cpu` stays in `requirements.txt`.
+
+## D11. Knowledge-base reference URLs
+Every KB document is written in plain language in the project's own words. Each file's frontmatter credits the public reference it was checked against: mostly MedlinePlus, plus NHS, Testing.com and Cleveland Clinic. No text was copied. Please open each `source_url` once before the demo, because health websites sometimes move pages.
+
+## D12. Retrieval threshold kept at 0.35
+`scripts/eval_retrieval.py` showed on-topic top scores of 0.51–0.76 and off-topic scores of 0.04–0.14. The default `RAG_MIN_SCORE=0.35` sits well inside that gap, so it was not changed. Results: hit@1 = 0.95, hit@3 = 1.00 on 20 questions (`backend/scripts/eval_results.md`).
+
+## D13. `used_report_context` is true only if the answer used the report
+The response flag is set when report context was sent **and** the answer contains a `[Report]` marker. This is the most honest signal for the UI.
+
+## D14. The prebuilt index is not committed
+`backend/data/index/` stays git-ignored. Build it with `python -m scripts.build_index` (about 30 seconds after the model download). This way the index can never get out of date with the knowledge base.
