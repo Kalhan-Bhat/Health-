@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { computeBarGeometry } from '../utils/rangeGeometry.js'
 import RangeBar from '../components/RangeBar.jsx'
 import App from '../App.jsx'
@@ -59,8 +59,24 @@ describe('RangeBar', () => {
 describe('App', () => {
   it('renders the shell with the Dashboard tab disabled before a report', () => {
     render(<App />)
+    // The landing page comes first; open the app from it.
+    fireEvent.click(screen.getAllByRole('button', { name: 'Open MedBridge' })[0])
     expect(screen.getByRole('tab', { name: 'Report' })).toHaveAttribute('aria-selected', 'true')
     expect(screen.getByRole('tab', { name: 'Dashboard' })).toBeDisabled()
     expect(screen.getByText('Explain my report')).toBeDisabled() // consent not ticked yet
+  })
+})
+
+describe('Landing', () => {
+  it('shows the landing page first, then opens the Ask tab', () => {
+    render(<App />)
+    expect(
+      screen.getByRole('heading', { level: 1, name: /Lab reports, in plain words/ }),
+    ).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'Ask about a test' }))
+    expect(screen.getByRole('tab', { name: 'Ask' })).toHaveAttribute('aria-selected', 'true')
+    // The logo returns to the landing page.
+    fireEvent.click(screen.getByRole('button', { name: 'MedBridge home' }))
+    expect(screen.getByRole('heading', { level: 1, name: /Lab reports/ })).toBeInTheDocument()
   })
 })

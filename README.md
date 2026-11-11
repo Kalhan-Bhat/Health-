@@ -125,7 +125,7 @@ cp .env.example .env              # optional; the dev server proxies /api to :80
 npm run dev                       # http://localhost:5173
 ```
 
-Open <http://localhost:5173>, tick the consent box, and click one of the **sample report** buttons.
+Open <http://localhost:5173>. The landing page appears first; click **Try a sample report**, tick the consent box, and pick one of the sample reports.
 
 ---
 
@@ -207,6 +207,10 @@ The `RAG_MIN_SCORE` of 0.35 sits well inside the gap between off-topic and on-to
 ### Screenshots
 
 All screens below show live output from the app on the synthetic sample reports.
+
+**Landing page.** Opening the app shows a landing page first: the product's transformation (a raw lab row becoming a gauge and a plain sentence), the three features with live UI, the four-step pipeline, the safety principles and the project details. "Open MedBridge" enters the tool, and the logo returns to the landing page.
+
+![Landing page](docs/screenshots/landing.png)
 
 | Upload | Report (with a lab-marked critical value) |
 |---|---|

@@ -7,7 +7,7 @@ import { TABS } from '../utils/constants.js'
  *
  * @param {{ activeTab: string, onTabChange: (id: string) => void, hasReport: boolean }} props
  */
-export default function Header({ activeTab, onTabChange, hasReport }) {
+export default function Header({ activeTab, onTabChange, hasReport, onHome }) {
   const isDisabled = (id) => id === 'dashboard' && !hasReport
 
   function handleKeyDown(event) {
@@ -23,10 +23,15 @@ export default function Header({ activeTab, onTabChange, hasReport }) {
   return (
     <header className="header">
       <div className="header__inner">
-        <div className="brand">
+        <button
+          type="button"
+          className="brand brand--button"
+          onClick={onHome}
+          aria-label="MedBridge home"
+        >
           <BrandMark />
           <span>MedBridge</span>
-        </div>
+        </button>
         <div className="tabs" role="tablist" aria-label="Sections" onKeyDown={handleKeyDown}>
           {TABS.map((tab) => {
             const disabled = isDisabled(tab.id)

@@ -11,6 +11,7 @@ import TestExplanationCard from './components/TestExplanationCard.jsx'
 import DoctorQuestions from './components/DoctorQuestions.jsx'
 import HealthDashboard from './components/HealthDashboard.jsx'
 import KnowledgeAssistant from './components/KnowledgeAssistant.jsx'
+import Landing from './components/Landing.jsx'
 import { analyzeReport } from './api/client.js'
 import useAsync from './hooks/useAsync.js'
 import { ANALYZE_STAGES, SAMPLE_REPORTS } from './utils/constants.js'
@@ -23,6 +24,8 @@ import { isAbnormal, sortByConcern } from './utils/format.js'
  *  - activeTab: which tab is visible
  */
 export default function App() {
+  // The landing page is shown first; it is a view, not a separate URL.
+  const [showLanding, setShowLanding] = useState(true)
   const [activeTab, setActiveTab] = useState('report')
   const [report, setReport] = useState(null)
   const [chatMessages, setChatMessages] = useState([])
@@ -51,9 +54,27 @@ export default function App() {
     setActiveTab('report')
   }
 
+  function openApp(tab = 'report') {
+    setActiveTab(tab)
+    setShowLanding(false)
+    window.scrollTo(0, 0)
+  }
+
+  function goHome() {
+    setShowLanding(true)
+    window.scrollTo(0, 0)
+  }
+
+  if (showLanding) return <Landing onOpen={openApp} />
+
   return (
     <div className="app">
-      <Header activeTab={activeTab} onTabChange={setActiveTab} hasReport={report !== null} />
+      <Header
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        hasReport={report !== null}
+        onHome={goHome}
+      />
       <DisclaimerBanner />
       <main className="main">
         <section
