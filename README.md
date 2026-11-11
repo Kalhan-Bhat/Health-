@@ -206,7 +206,19 @@ The `RAG_MIN_SCORE` of 0.35 sits well inside the gap between off-topic and on-to
 
 ### Screenshots
 
-Screenshots need a real Groq key, because the report and chat screens show live AI output. After adding your key, run the demo and save screenshots to `docs/screenshots/` (for example `report.png`, `dashboard.png`, `ask.png`), then link them here.
+All screens below show live output from the app on the synthetic sample reports.
+
+| Upload | Report (with a lab-marked critical value) |
+|---|---|
+| ![Upload page with the hero range gauge](docs/screenshots/upload.png) | ![Thyroid and metabolic report summary](docs/screenshots/report.png) |
+| **Dashboard** | **Knowledge assistant** |
+| ![Health dashboard range gauges](docs/screenshots/dashboard.png) | ![Cited answer using the report](docs/screenshots/ask.png) |
+
+Mobile (375 px): ![Mobile views](docs/screenshots/mobile.png)
+
+### Design
+
+The reference-range gauge is the visual language of the whole app: the logo is a tiny gauge, the upload page opens with a large one whose marker glides into place once, and every dashboard row is a gauge with the lab's limits as tick labels. Status is always shown with a colour, a shape (arrow down, arrow up, tick) and a word, so it never depends on colour alone. Headings use *Bricolage Grotesque*; body text uses *Atkinson Hyperlegible*, a typeface designed by the Braille Institute for low-vision readers. Both are self-hosted, so the demo works offline.
 
 ---
 

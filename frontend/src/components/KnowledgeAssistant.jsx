@@ -152,7 +152,7 @@ export default function KnowledgeAssistant({ report, messages, setMessages }) {
         />
         <div className="chat-input__footer">
           <span className="small muted">
-            {input.length}/{MAX_QUESTION_CHARS} · Enter to send, Shift+Enter for a new line
+            Press Enter to send, Shift+Enter for a new line. {input.length}/{MAX_QUESTION_CHARS}
           </span>
           <button
             type="submit"

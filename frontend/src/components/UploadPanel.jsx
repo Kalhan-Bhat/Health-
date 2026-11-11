@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { FileUp, FileText, ShieldCheck } from 'lucide-react'
 import { MAX_UPLOAD_MB, SAMPLE_REPORTS } from '../utils/constants.js'
 import { formatBytes } from '../utils/format.js'
+import RangeGauge from './RangeGauge.jsx'
 
 /**
  * Drag-and-drop PDF upload with client-side checks, reading level toggle,
@@ -60,122 +61,150 @@ export default function UploadPanel({ onAnalyze, disabled = false }) {
   const canSubmit = file && consent && !disabled
 
   return (
-    <section className="card upload" aria-labelledby="upload-title">
-      <h1 id="upload-title">Understand your lab report</h1>
-      <p className="muted">
-        Upload a lab report PDF to get a plain-language explanation, a visual dashboard and
-        questions to ask your doctor.
-      </p>
-
-      <div
-        className={`dropzone ${dragOver ? 'dropzone--active' : ''}`}
-        onDragOver={(e) => {
-          e.preventDefault()
-          setDragOver(true)
-        }}
-        onDragLeave={() => setDragOver(false)}
-        onDrop={handleDrop}
-      >
-        <FileUp aria-hidden="true" size={36} />
-        {file ? (
-          <p className="dropzone__file">
-            <FileText aria-hidden="true" size={18} /> {file.name}{' '}
-            <span className="muted small">({formatBytes(file.size)})</span>
+    <>
+      <section className="hero" aria-labelledby="upload-title">
+        <div className="hero__text">
+          <h1 id="upload-title" className="hero__title">
+            See where your numbers sit.
+          </h1>
+          <p className="hero__lede">
+            Upload a lab report. MedBridge explains each result in plain words, shows it against
+            your lab&apos;s own range, and suggests questions for your doctor.
           </p>
-        ) : (
-          <p>Drag and drop your PDF here</p>
+        </div>
+        <figure className="specimen" aria-label="Example result">
+          <div className="specimen__head">
+            <span className="specimen__name">Haemoglobin</span>
+            <span className="specimen__unit">g/dL</span>
+          </div>
+          <RangeGauge
+            size="hero"
+            value={10.8}
+            low={12}
+            high={15.5}
+            status="low"
+            valueText="10.8"
+            label="Example: haemoglobin 10.8 g/dL, below the lab's range of 12.0 to 15.5"
+          />
+          <figcaption>
+            The green band is the lab&apos;s range. This example result is just below it.
+          </figcaption>
+        </figure>
+      </section>
+
+      <section className="card upload" aria-label="Upload your report">
+        <div
+          className={`dropzone ${dragOver ? 'dropzone--active' : ''}`}
+          onDragOver={(e) => {
+            e.preventDefault()
+            setDragOver(true)
+          }}
+          onDragLeave={() => setDragOver(false)}
+          onDrop={handleDrop}
+        >
+          <FileUp aria-hidden="true" size={30} strokeWidth={1.75} />
+          {file ? (
+            <p className="dropzone__file">
+              <FileText aria-hidden="true" size={18} /> {file.name}{' '}
+              <span className="muted small">({formatBytes(file.size)})</span>
+            </p>
+          ) : (
+            <p>Drag and drop your PDF here</p>
+          )}
+          <button
+            type="button"
+            className="btn btn--secondary"
+            onClick={() => inputRef.current?.click()}
+            disabled={disabled}
+          >
+            Choose PDF
+          </button>
+          <label htmlFor="pdf-input" className="visually-hidden">
+            Choose a PDF lab report
+          </label>
+          <input
+            id="pdf-input"
+            ref={inputRef}
+            type="file"
+            accept="application/pdf,.pdf"
+            hidden
+            onChange={(e) => pickFile(e.target.files?.[0])}
+          />
+          <p className="muted small">
+            Digital (text-based) PDF, up to {MAX_UPLOAD_MB} MB and 20 pages
+          </p>
+        </div>
+
+        {localError && (
+          <p className="field-error" role="alert">
+            {localError}
+          </p>
         )}
+
+        <fieldset className="reading-level">
+          <legend>Explanation style</legend>
+          <label>
+            <input
+              type="radio"
+              name="reading-level"
+              value="simple"
+              checked={readingLevel === 'simple'}
+              onChange={() => setReadingLevel('simple')}
+            />
+            Simple
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="reading-level"
+              value="detailed"
+              checked={readingLevel === 'detailed'}
+              onChange={() => setReadingLevel('detailed')}
+            />
+            Detailed
+          </label>
+        </fieldset>
+
+        <label className="consent">
+          <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} />
+          <span>I understand MedBridge is for education and does not replace my doctor.</span>
+        </label>
+
         <button
           type="button"
-          className="btn btn--secondary"
-          onClick={() => inputRef.current?.click()}
-          disabled={disabled}
+          className="btn btn--primary btn--wide"
+          disabled={!canSubmit}
+          onClick={() => onAnalyze(file, readingLevel)}
         >
-          Choose PDF
+          Explain my report
         </button>
-        <label htmlFor="pdf-input" className="visually-hidden">
-          Choose a PDF lab report
-        </label>
-        <input
-          id="pdf-input"
-          ref={inputRef}
-          type="file"
-          accept="application/pdf,.pdf"
-          hidden
-          onChange={(e) => pickFile(e.target.files?.[0])}
-        />
-        <p className="muted small">Text-based PDF only · up to {MAX_UPLOAD_MB} MB · 20 pages</p>
-      </div>
 
-      {localError && (
-        <p className="field-error" role="alert">
-          {localError}
+        <p className="privacy-note small">
+          <ShieldCheck aria-hidden="true" size={16} />
+          Your file is processed for this session only and is not stored. Report text is sent to an
+          AI service (Groq) to generate explanations.
         </p>
-      )}
 
-      <fieldset className="reading-level">
-        <legend>Explanation style</legend>
-        <label>
-          <input
-            type="radio"
-            name="reading-level"
-            value="simple"
-            checked={readingLevel === 'simple'}
-            onChange={() => setReadingLevel('simple')}
-          />
-          Simple
-        </label>
-        <label>
-          <input
-            type="radio"
-            name="reading-level"
-            value="detailed"
-            checked={readingLevel === 'detailed'}
-            onChange={() => setReadingLevel('detailed')}
-          />
-          Detailed
-        </label>
-      </fieldset>
-
-      <label className="consent">
-        <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} />
-        <span>I understand MedBridge is for education and does not replace my doctor.</span>
-      </label>
-
-      <button
-        type="button"
-        className="btn btn--primary btn--wide"
-        disabled={!canSubmit}
-        onClick={() => onAnalyze(file, readingLevel)}
-      >
-        Explain my report
-      </button>
-
-      <p className="privacy-note small">
-        <ShieldCheck aria-hidden="true" size={16} />
-        Your file is processed for this session only and is not stored. Report text is sent to an AI
-        service (Groq) to generate explanations.
-      </p>
-
-      <div className="samples">
-        <p className="small">
-          <strong>No report handy?</strong> Try a synthetic sample report
-          {!consent && ' (tick the box above first)'}:
-        </p>
-        <div className="button-row">
-          {SAMPLE_REPORTS.map((s) => (
-            <button
-              key={s.file}
-              type="button"
-              className="btn btn--secondary btn--small"
-              disabled={!consent || disabled}
-              onClick={() => loadSample(s)}
-            >
-              {s.label}
-            </button>
-          ))}
+        <div className="samples">
+          <p className="small">
+            <strong>No report handy?</strong> Try a synthetic sample report
+            {!consent && ' (tick the box above first)'}:
+          </p>
+          <div className="button-row">
+            {SAMPLE_REPORTS.map((s) => (
+              <button
+                key={s.file}
+                type="button"
+                className="btn btn--secondary btn--small"
+                disabled={!consent || disabled}
+                onClick={() => loadSample(s)}
+              >
+                {s.label}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   )
 }

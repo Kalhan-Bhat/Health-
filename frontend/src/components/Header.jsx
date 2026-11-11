@@ -1,4 +1,4 @@
-import { Stethoscope } from 'lucide-react'
+import BrandMark from './BrandMark.jsx'
 import { TABS } from '../utils/constants.js'
 
 /**
@@ -24,7 +24,7 @@ export default function Header({ activeTab, onTabChange, hasReport }) {
     <header className="header">
       <div className="header__inner">
         <div className="brand">
-          <Stethoscope aria-hidden="true" size={26} />
+          <BrandMark />
           <span>MedBridge</span>
         </div>
         <div className="tabs" role="tablist" aria-label="Sections" onKeyDown={handleKeyDown}>

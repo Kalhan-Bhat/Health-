@@ -47,8 +47,8 @@ The response flag is set when report context was sent **and** the answer contain
 ## D15. One live test stands in for the deferred live checks
 `backend/tests/test_live.py` (marked `live`, skipped by default) runs the Phase 2 acceptance check against the real Groq API: the CBC sample must return Haemoglobin `low`, at least 4 doctor questions and a disclaimer, in under 15 s. Once a key is in `.env`, run `pytest -m live`. In that mode `conftest.py` keeps the real key instead of the dummy test key.
 
-## D16. Screenshots left for the user
-The report and chat screens show live AI output, which needs a real Groq key. The README explains where to add screenshots after the key is set.
+## D16. Screenshots (resolved)
+Once the Groq key was set, screenshots of live output on the synthetic samples were added to `docs/screenshots/` and the README.
 
 ## D17. Rate limiting is middleware
 The optional per-IP limit from §12 (20 requests per minute) is Starlette middleware, not a route, so the two-endpoint rule still holds. Set `RATE_LIMIT_PER_MINUTE=0` to turn it off.

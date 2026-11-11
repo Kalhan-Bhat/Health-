@@ -36,7 +36,7 @@ export default function TestExplanationCard({ test, defaultOpen = false }) {
             <p className="muted small">
               Lab reference range: {test.reference_range_raw}
               {test.unit ? ` ${test.unit}` : ''}
-              {test.lab_flag ? ` · Lab flag: ${test.lab_flag}` : ''}
+              {test.lab_flag ? `. The lab marked it "${test.lab_flag}".` : ''}
             </p>
           )}
           {e ? (

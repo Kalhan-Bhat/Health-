@@ -15,7 +15,7 @@ export default function SourceCard({ source, anchorId, highlighted = false, debu
       <div className="source-card__body">
         <p className="source-card__title">
           {source.title}
-          {source.section && <span className="muted"> · {source.section}</span>}
+          {source.section && <span className="source-card__section">{source.section}</span>}
         </p>
         <p className="source-card__snippet small">{source.snippet}</p>
         <p className="small source-card__meta">
@@ -27,7 +27,7 @@ export default function SourceCard({ source, anchorId, highlighted = false, debu
           ) : (
             source.source_name
           )}
-          {debug && <span className="muted"> · score {source.score.toFixed(3)}</span>}
+          {debug && <span className="muted"> (similarity {source.score.toFixed(3)})</span>}
         </p>
       </div>
     </li>
